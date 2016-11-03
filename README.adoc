@@ -1,0 +1,56 @@
+= MongoDB Service Broker for Pivotal Cloud Foundry 
+Tested with MongoDB 2.6, and PCF 1.6.9+
+
+== Getting Started
+. Build your own mongodb Docker image
++
+----
+$ cd docker-mongodb
+$ docker build -t bbertka/mongodb:latest .
+$ docker images
+REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
+bbertka/mongodb       latest              73e4dbd6f4f0        11 hours ago        550.6 MB
+----
+
+. Upload Docker-bosh release using link:https://bosh.io/docs/bosh-cli.html[Bosh CLI]
++
+----
+$ bosh target BOSH_HOST
+$ cd docker-boshrelease
+$ bosh upload release bosh upload release https://bosh.io/d/github.com/cf-platform-eng/docker-boshrelease
+----
+
+. Build tile packages: requires link:http://cf-platform-eng.github.io/isv-portal/tile-generator/[Tile Generator] installed
++
+----
+$ cd service-broker
+$ mvn clean package -Dmaven.test.skip=true
+$ cd ..
+$ tile build
+----
+
+. Use PCF utility for Ops Manager to import the newly created *.pivotal* artifact
++
+----
+$ pcf import product/mongo-db-for-pcf-0.X.X.pivotal
+----
+
+. Create security group needed by the tile config (you can override this if you wish by flipping the flag in tile.yml)
++
+----
+# Need to make this specific to subnet
+$ cf create-security-group all_open release/src/templates/all_open.json
+----
+
+. Use OpsManager to configure and deploy the tile
++
+image:docs/mongo_config.png[]
+
+. Check the Marketplace in apps manager for developer access
++
+image:docs/mongo_market.png[]
+
+== Congratulations!
+
+You can now auto-provision to a Docker backed MongoDB instance!
+
