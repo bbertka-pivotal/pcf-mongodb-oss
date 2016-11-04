@@ -12,28 +12,29 @@ REPOSITORY            TAG                 IMAGE ID            CREATED           
 bbertka/mongodb       latest              73e4dbd6f4f0        11 hours ago        550.6 MB
 ----
 
-. Upload Docker-bosh release using link:https://bosh.io/docs/bosh-cli.html[Bosh CLI]
+. Cache the Docker image you just built 
 +
 ----
-$ bosh target BOSH_HOST
-$ cd docker-boshrelease
-$ bosh upload release bosh upload release https://bosh.io/d/github.com/cf-platform-eng/docker-boshrelease
+$ cd ..
+$ mkdir docker-cache
+$ docker save bbertka/mongodb | gzip -c > docker-cache/bbertka-mongodb.tgz
 ----
 
-. Build tile packages: requires link:http://cf-platform-eng.github.io/isv-portal/tile-generator/[Tile Generator] installed
+. Build the Spring Boot Service Broker 
 +
 ----
 $ cd service-broker
 $ mvn clean package -Dmaven.test.skip=true
+----
+
+. Build the tile
++
+----
 $ cd ..
 $ tile build
 ----
 
-. Use PCF utility for Ops Manager to import the newly created *.pivotal* artifact
-+
-----
-$ pcf import product/mongo-db-for-pcf-0.X.X.pivotal
-----
+. Use Ops Manager to import your tile
 
 . Create security group needed by the tile config (you can override this if you wish by flipping the flag in tile.yml)
 +
@@ -52,5 +53,5 @@ image:docs/mongo_market.png[]
 
 == Congratulations!
 
-You can now auto-provision to a Docker backed MongoDB instance!
+You can now auto-provision MongoDB to a Docker backed instance for testing!
 
