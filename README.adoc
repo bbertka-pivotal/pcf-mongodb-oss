@@ -12,7 +12,7 @@ REPOSITORY            TAG                 IMAGE ID            CREATED           
 bbertka/mongodb       latest              73e4dbd6f4f0        11 hours ago        550.6 MB
 ----
 
-. Cache the Docker image you just built 
+. Back in top level directory, cache the Docker image you just built into new docker-cache diretory
 +
 ----
 $ cd ..
@@ -27,14 +27,14 @@ $ cd service-broker
 $ mvn clean package -Dmaven.test.skip=true
 ----
 
-. Build the tile
+. Back in top level directory, build the tile (requires tile.yml)
 +
 ----
 $ cd ..
 $ tile build
 ----
 
-. Use Ops Manager to import your tile
+. Use Ops Manager to import your tile located in *./product* folder
 
 . Create security group needed by the tile config (you can override this if you wish by flipping the flag in tile.yml)
 +
